@@ -1,0 +1,36 @@
+#!/bin/bash
+R="\033[1;31m"
+G="\033[1;32m"
+Y="\033[1;33m"
+clear
+echo -e "\033[1;32m"
+apt-get update && apt-get upgrade -y > /dev/null 2>&1
+apt install proot-distro -y > /dev/null 2>&1
+echo "
+DISTRO_NAME='RaspberryPi OS'
+TARBALL_URL['arm']='http://downloads.raspberrypi.org/raspbian_lite/archive/2018-04-19-15:24/root.tar.xz'
+TARBALL_SHA256['arm']='c64cb0b6543dbaaae38539e574ad3ef1ecab25285208751dac57d1a852b4fa98'
+" >> $PREFIX/etc/proot-distro/raspberrypi.sh
+echo "proot-distro login --user raspberrypi" >> $PREFIX/bin/Raspberrypi-termux
+chmod +x $PREFIX/bin/Raspberrypi-termux
+echo -e "\aSuccessfully Set Up RaspberryPi OS In Your Terminal\n"
+proot-distro list
+sleep 2
+# using loop 
+while true; do
+  echo -e "\033[1;36m"
+  read -p "Do You Want To Install RaspberryPi OS Now (yes/no): " Install
+  if [ "$Install" == "yes" ]; then
+    echo -e "\t\aStarting to Install RaspberryPi OS On Your Device\n"
+    proot-distro install raspberrypi
+    touch $PREFIX/raspberrypi
+    chmod +x $PREFIX/raspberrypi
+    echo -e "\aTo Start 'raspberrypi'\n"
+    break
+  elif [ "$Install" == "no" ]; then
+    echo -e "\aThank You!\n"
+    break
+  else
+    echo -e "${R}Error: Invalid input. Please enter 'yes' or 'no'\n"
+  fi
+done
